@@ -40,6 +40,10 @@ namespace BankAccounts
 
         public static void listUsersStatistics()
         {
+            Console.Clear();
+            Console.WriteLine("User statistics: ");
+            Console.WriteLine();
+
             int back = 1;
             var users = Program.users;
             var accounts = Program.bankAccounts;
@@ -62,8 +66,11 @@ namespace BankAccounts
             Menu.listMainMenu();
         }
 
-        public static void listBlockedAccounts ()
+        public static void listBlockedAccounts()
         {
+            Console.Clear();
+            Console.WriteLine("Blocked accounts: ");
+
             int back = 1;
             var accounts = Program.bankAccounts;
 
@@ -82,7 +89,43 @@ namespace BankAccounts
 
         public static void paymentOrWithdraw()
         {
+            Console.WriteLine("Please insert account number! or insert 'q' to go back!");
 
+            int back = 1;
+            string accountNo = Console.ReadLine();
+            var accounts = Program.bankAccounts.Where(b => b.AccountNumber == accountNo);
+
+            if (accounts.Count() > 0)
+            {
+                BankAccounts account = accounts.First();
+
+                if (account.IsBlocked == true)
+                {
+                    Console.WriteLine("This account is blocked!");
+                    paymentOrWithdraw();
+                }
+                else
+                {
+                    Console.Clear();
+                    withdrawOrDeposit(account);
+                }
+            } else {
+                if (accountNo == "q")
+                {
+                    Menu.listMainMenu();
+                }
+
+                Console.WriteLine("There is no account with given id!");
+                paymentOrWithdraw();
+            }
+
+            while (back != 0)
+            {
+                Console.WriteLine("If you want go back please insert: '0'");
+                back = Int32.Parse(Console.ReadLine());
+            }
+
+            Menu.listMainMenu();
         }
 
         private static void writeAccounts(Users user, List<BankAccounts> accounts)
@@ -91,6 +134,42 @@ namespace BankAccounts
                 user.Id + " | " + user.Name + " " + user.Surname + " | " + user.Address + " | " + user.Pesel
             );
             Console.WriteLine();
+        }
+
+        private static void withdrawOrDeposit(BankAccounts account)
+        {
+            Console.WriteLine("Select operation: ");
+            Console.WriteLine("1 - Withdrawal from the account");
+            Console.WriteLine("2 - Deposit cache on the account");
+
+            int option = Int32.Parse(Console.ReadLine());
+
+            switch (option)
+            {
+                case 1:
+                    Console.WriteLine("Please insert value to withdraw: ");
+                    double withdrawValue = Double.Parse(Console.ReadLine());
+                    account.Balance = account.Balance - withdrawValue;
+                    updateBankAccount(account);
+                    break;
+                case 2:
+                    Console.WriteLine("Please insert value you want to deposit: ");
+                    double depositValue = Double.Parse(Console.ReadLine());
+                    account.Balance = account.Balance + depositValue;
+                    updateBankAccount(account);
+                    break;
+                default:
+                    Console.WriteLine("Wrong option please try again!");
+                    break;
+            }
+        }
+
+        private static void updateBankAccount(BankAccounts account)
+        {
+            Program.bankAccounts.Where(b => b.AccountNumber == account.AccountNumber).ToList().ForEach(b =>
+            {
+                b = account;
+            });
         }
     }
 }

@@ -11,11 +11,10 @@ namespace BankAccounts
         public static void listMainMenu()
         {
             Console.Clear();
-            System.Console.WriteLine("Choose action you want perform: ");
-            System.Console.WriteLine("1 - List user accounts");
-            System.Console.WriteLine("2 - List blocked accounts");
-            System.Console.WriteLine("3 - Payment or withdraw");
-            System.Console.WriteLine("4 - Create account statistics");
+            Console.WriteLine("1 - List user accounts");
+            Console.WriteLine("2 - List blocked accounts");
+            Console.WriteLine("3 - Payment or withdraw");
+            Console.WriteLine("4 - Create account statistics");
 
             int option = 0;
 
@@ -23,6 +22,11 @@ namespace BankAccounts
             {
                 switch (option)
                 {
+                    case 0:
+                        Console.WriteLine();
+                        Console.WriteLine("Choose action you want perform: ");
+                        option = Int32.Parse(Console.ReadLine());
+                        break;
                     case 1:
                         Console.WriteLine("Account lists:");
                         Actions.listUsers();
@@ -33,6 +37,7 @@ namespace BankAccounts
                         break;
                     case 3:
                         Console.WriteLine("Payment or withdraw:");
+                        Actions.paymentOrWithdraw();
                         break;
                     case 4:
                         Console.WriteLine("User statistics: ");
